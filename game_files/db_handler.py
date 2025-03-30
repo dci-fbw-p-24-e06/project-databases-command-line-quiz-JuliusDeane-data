@@ -2,7 +2,7 @@ import psycopg2 as psy
 from config import config
 
 
-
+# pandas???
 
 class Db_handler:
   
@@ -27,10 +27,13 @@ class Db_handler:
         conn.close()
         return questions
     
-    def add_player(self, name):
+    def add_player(self, name, password):
         conn = psy.connect(**config)
         cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO player (name) VALUES {name};")
+        cursor.execute(f"INSERT INTO player (name, password) VALUES ('{name}', '{password}');")
+        conn.commit()
         conn.close()
     
 
+db = Db_handler()
+db.add_player('Peter', '1234')
