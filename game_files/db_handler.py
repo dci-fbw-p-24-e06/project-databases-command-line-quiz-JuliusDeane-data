@@ -6,16 +6,20 @@ from config import config
 
 class Db_handler:
   
-    def to_dict(self, questions):
-        return {id: {"question": question,
-                     "answers": [corr, wr1, wr2, wr3],
-                     "difficulty": difficulty} for id, question, corr, wr1, wr2, wr3, difficulty in questions}
+    def to_dict(self, data, type):
+        if type == "questions":
+            return {id: {"question": question,
+                         "answers": [corr, wr1, wr2, wr3],
+                         "difficulty": difficulty} for id, question, corr, wr1, wr2, wr3, difficulty in data
+                         }
+        elif type == "player":
+            pass
 
     def easy_questions(self):
         conn = psy.connect(**config)
         cursor = conn.cursor()
         cursor.execute("SELECT id, question, correct_answer, wrong_1, wrong_2, wrong_3, difficulty FROM easy_difficulty;")
-        questions = self.to_dict(cursor.fetchall())
+        questions = self.to_dict(cursor.fetchall(), "questions")
         conn.close()
         return questions
     
@@ -23,7 +27,7 @@ class Db_handler:
         conn = psy.connect(**config)
         cursor = conn.cursor()
         cursor.execute("SELECT id, question, correct_answer, wrong_1, wrong_2, wrong_3, difficulty FROM advanced_difficulty;")
-        questions = self.to_dict(cursor.fetchall())
+        questions = self.to_dict(cursor.fetchall(), "questions")
         conn.close()
         return questions
     
@@ -33,7 +37,17 @@ class Db_handler:
         cursor.execute(f"INSERT INTO player (name, password) VALUES ('{name}', '{password}');")
         conn.commit()
         conn.close()
+
+    def get_player_list(self):
+        conn = psy.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM player;")
+        player_list = [x[0] for x in cursor.fetchall()]
+        conn.close()
+        return player_list
     
 
 db = Db_handler()
-db.add_player('Peter', '1234')
+
+
+
