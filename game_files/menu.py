@@ -1,11 +1,13 @@
-class Menu:
+from game_logic import Game
+from input_handler import check_int_input
+
+class CLI_Menu:
     def __init__(self):
         self.main_menu_choices = {
             1: "New Game",
-            2: "Add Player",
-            3: "See Highscores",
-            4: "Add Question",
-            5: "Quit Game"
+            2: "See Highscores",
+            3: "Add Question",
+            4: "Quit Game"
         }
         self.difficulty_levels = {
             1: "It's all computer! (easy)",
@@ -18,38 +20,33 @@ class Menu:
         print("#__MAIN MENU__#")
         for key, value in self.main_menu_choices.items():
             print(f"{key}. {value}")
-        menu_choice = self.check_int_input("Make your choice: ", (1, 6))
-        return menu_choice
+        menu_choice = check_int_input("Make your choice: ", (1, len(self.main_menu_choices)+1))
+        if menu_choice == 1:
+            self.new_game()
 
-    def check_int_input(self, text, int_range=(1, 999999)):
-        choice = ""
-        while not choice:    
-            try:
-                choice = int(input(text))
-            except ValueError:
-                print("Wrong input. Please only input a number.")
-                choice = ""
-            if choice not in range(*int_range) and isinstance(choice, int):
-                print("Number out of range. Please choose a valid number.")
-                choice = ""
-        else:
-            return choice
+    def new_game(self):
+        print("__Setup New Game__")
+        difficulty = self.set_difficulty()
+        rounds = self.set_rounds()
+        g = Game(rounds, difficulty)
+        g.game_round()
 
     def set_difficulty(self):
         print("Choose difficulty:")
         for key, value in self.difficulty_levels.items():
             print(f"{key}. {value}")
-        diff_choice = self.check_int_input(text="Your choice (1-5): ", int_range=(1,6))
-        return diff_choice
+        diff_choice = check_int_input(text="Your choice (1-5): ", int_range=(1, 6))
+        return self.difficulty_levels[diff_choice]
         
     def set_rounds(self):
-        rounds = self.check_int_input(text="Enter number of rounds (1-20): ", int_range=(1,21))
+        rounds = check_int_input(text="Enter number of rounds (1-20): ", int_range=(1, 21))
         return rounds
     
 
 
 
+if __name__ == '__main__':
+    m = CLI_Menu()
 
-m = Menu()
-
-print(m.main_menu())
+    while True:
+        m.main_menu()

@@ -15,7 +15,7 @@ class Db_handler:
         elif type == "player":
             pass
 
-    def easy_questions(self):
+    def get_questions(self):
         conn = psy.connect(**config)
         cursor = conn.cursor()
         cursor.execute("SELECT id, question, correct_answer, wrong_1, wrong_2, wrong_3, difficulty FROM easy_difficulty;")
@@ -23,13 +23,6 @@ class Db_handler:
         conn.close()
         return questions
     
-    def advanced_questions(self):
-        conn = psy.connect(**config)
-        cursor = conn.cursor()
-        cursor.execute("SELECT id, question, correct_answer, wrong_1, wrong_2, wrong_3, difficulty FROM advanced_difficulty;")
-        questions = self.to_dict(cursor.fetchall(), "questions")
-        conn.close()
-        return questions
     
     def add_player(self, name, password):
         conn = psy.connect(**config)
@@ -46,8 +39,16 @@ class Db_handler:
         conn.close()
         return player_list
     
+    def get_password(self, name):
+        conn = psy.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT password FROM player WHERE name='{name}';")
+        password = cursor.fetchall()[0][0]
+        conn.close()
+        return password
+    
 
-db = Db_handler()
+
 
 
 
