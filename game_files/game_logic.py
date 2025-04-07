@@ -6,24 +6,22 @@ from input_handler import check_int_input, check_str_input_whitelist
 db = db_handler.Db_handler()
 
 
-class Game:
-    def __init__(self, total_rounds=5, difficulty="It's all computer! (easy)"):
+class Game(db_handler.Db_handler):
+    def __init__(self, player, total_rounds=5, topic=1, difficulty=1):
         self.questions = {}
-        self.player = "Anon"
+        self.player = player
+        self.topic = topic
         self.score = 0
         self.rounds = 0
         self.total_rounds = total_rounds
         self.difficulty = difficulty
         self.id_list = []
         self.corr_answer_letter = ""
-        self.corr_answers_list = []
+        self.corr_answers_list = self.get_answered_questions(player, topic)
 
-    def load_questions(self, difficulty):
+    def load_questions(self, topic, difficulty):
         """Loads the questions from the database and stores them in self.questions"""
-        if difficulty == "It's all computer! (easy)":
-            questions = db.get_questions()
-        else:
-            questions = db.advanced_questions()
+        questions = self.get_questions(topic, difficulty)
         self.questions = questions
 
     def show_question(self, id):
@@ -69,7 +67,7 @@ class Game:
 
     def game_round(self):
         """One quiz round. Load the questions and play a certain number of question rounds"""
-        self.load_questions(self.difficulty)
+        self.load_questions(self.topic, self.difficulty)
         self.make_id_list()
         while self.rounds < self.total_rounds:
             self.rounds += 1

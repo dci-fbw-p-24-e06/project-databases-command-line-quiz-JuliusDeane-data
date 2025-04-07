@@ -13,12 +13,15 @@ def check_int_input(text, int_range=(1, 999999), exclude=[]):
         return choice
 
 
-def check_str_input_whitelist(text: str, whitelist: list) -> str:
+def check_str_input_whitelist(text: str, whitelist: list, show_list: str = 'y') -> str:
     choice = ""
     while not choice:   
         choice = input(text) 
-        if choice not in whitelist:
+        if choice not in whitelist and show_list == 'y':
             print(f"Wrong input. Allowed input: {", ".join(whitelist)}.")
+            choice = ""
+        elif choice not in whitelist and show_list == 'n':
+            print(f"Wrong input. '{choice}' not allowed. Please try again.")
             choice = ""
     else:
         return choice
@@ -38,4 +41,4 @@ def check_str_input_blacklist(text: str, blacklist: list, show_list: str = 'n') 
         return choice
 
 if __name__ == '__main__':
-    print(check_str_input_blacklist("Guess valid number: ", ['12', '13', 'abc', 'dwg'], show_list='y'))
+    print(check_str_input_whitelist("Guess valid number: ", ['12', '13', 'abc', 'dwg'], show_list='y'))
