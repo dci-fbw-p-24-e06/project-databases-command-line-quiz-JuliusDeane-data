@@ -16,7 +16,6 @@ class Db_handler:
                         "difficulty": difficulty} for id, question, corr, wr1, wr2, wr3, difficulty in data
                         }
 
-
     def get_questions(self, topic, difficulty):
         conn = psy.connect(**config)
         cursor = conn.cursor()
@@ -31,7 +30,6 @@ class Db_handler:
         cursor.execute(f"INSERT INTO player (name, password) VALUES ('{name}', '{password}');")
         conn.commit()
         conn.close()
-
     
     def get_player_list(self):
         conn = psy.connect(**config)
@@ -59,6 +57,9 @@ class Db_handler:
             answered_questions = {f"{self.topics[topic]}": []}
         conn.close()
         return answered_questions[self.topics[topic]]
+    
+    def add_answered_questions(self, name, topic, ):
+        pass
     
     def add_answered_questions(self, name, answered_questions):
         conn = psy.connect(**config)

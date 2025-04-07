@@ -6,14 +6,14 @@ def check_int_input(text, int_range=(1, 999999), exclude=[]):
         except ValueError:
             print("Wrong input. Please only input a number.")
             choice = ""
-        if (choice not in range(*int_range) or choice in exclude) and isinstance(choice, int):
+        if (choice not in range(*int_range) or choice in exclude) and isinstance(choice, int):  # noqa
             print("Number out of range. Please choose a valid number.")
             choice = ""
     else:
         return choice
 
 
-def check_str_input_whitelist(text: str, whitelist: list, show_list: str = 'y') -> str:
+def check_str_input_whitelist(text: str, whitelist: list, show_list: str = 'y') -> str:  # noqa
     choice = ""
     while not choice:   
         choice = input(text) 
@@ -27,7 +27,7 @@ def check_str_input_whitelist(text: str, whitelist: list, show_list: str = 'y') 
         return choice
 
 
-def check_str_input_blacklist(text: str, blacklist: list, show_list: str = 'n') -> str:
+def check_str_input_blacklist(text: str, blacklist: list, show_list: str = 'n') -> str:  # noqa
     choice = ""
     while not choice:   
         choice = input(text) 
@@ -40,5 +40,9 @@ def check_str_input_blacklist(text: str, blacklist: list, show_list: str = 'n') 
     else:
         return choice
 
+
 if __name__ == '__main__':
-    print(check_str_input_whitelist("Guess valid number: ", ['12', '13', 'abc', 'dwg'], show_list='y'))
+    print(check_str_input_whitelist(
+        "Guess valid number: ",
+        ['12', '13', 'abc', 'dwg'],
+        show_list='y'))
