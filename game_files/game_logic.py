@@ -1,12 +1,12 @@
-import db_handler
+from .db_handler import Db_handler
 import random
-from input_handler import check_int_input, check_str_input_whitelist
+from .input_handler import check_int_input, check_str_input_whitelist
 
 
 # db = db_handler.Db_handler()
 
 
-class Game(db_handler.Db_handler):
+class Game(Db_handler):
     def __init__(self, player, total_rounds=5, topic=1, difficulty=1):
         self.questions = {}
         self.player = player
@@ -17,7 +17,7 @@ class Game(db_handler.Db_handler):
         self.difficulty = difficulty
         self.id_list = []
         self.corr_answer_letter = ""
-        self.corr_answers_list = self.get_answered_questions(player, topic)
+        self.corr_answers_dict = self.get_answered_questions(player)
 
     def load_questions(self, topic, difficulty):
         """
@@ -36,7 +36,7 @@ class Game(db_handler.Db_handler):
         answers = self.questions[id]["answers"]
         corr_answer = answers[0]
         random.shuffle(answers)
-        self.corr_answer_letter = "abcd"[answers.index(corr_answer)]        
+        self.corr_answer_letter = "abcd"[answers.index(corr_answer)]
         return f"a: {answers[0]}\nb: {answers[1]}\nc: {answers[2]}\nd: {answers[3]}"  # noqa
 
     def check_answer(self, id, answer):
@@ -46,8 +46,8 @@ class Game(db_handler.Db_handler):
         Updates the score and and the list of correct answers.
         """
         if answer == self.corr_answer_letter:
-            self.score += self.questions[id]['difficulty']
-            self.corr_answers_list.append(id)
+            self.score += self.questions[id]["difficulty"]
+            self.corr_answers_dict[self.topics[self.topic]].append(id)
             return f"Correct! New score: {self.score}"
         else:
             return f"False! Your score: {self.score}"
@@ -58,9 +58,10 @@ class Game(db_handler.Db_handler):
         minus list of already answered question (feature not yet implemented)
         """
         self.id_list = [
-            key for key in self.questions.keys()
-            if key not in self.corr_answers_list
-            ]
+            key
+            for key in self.questions.keys()
+            if key not in self.corr_answers_dict[self.topics[self.topic]]
+        ]
 
     def pick_question(self):
         """Returns the id of a randomly picked question"""
@@ -78,10 +79,7 @@ class Game(db_handler.Db_handler):
         id = self.pick_question()
         print(self.show_question(id))
         print(self.show_answers(id))
-        answer = check_str_input_whitelist(
-            "Your answer: ",
-            ['a', 'b', 'c', 'd']
-            )
+        answer = check_str_input_whitelist("Your answer: ", ["a", "b", "c", "d"])
         print(self.check_answer(id, answer))
 
     def game_round(self):
@@ -95,6 +93,7 @@ class Game(db_handler.Db_handler):
             self.rounds += 1
             self.question_round()
         else:
+            self.add_answered_questions(self.player, self.corr_answers_dict)
             print(f"Game over. Your total score is: {self.score}.")
 
     def add_question(self):
@@ -104,38 +103,39 @@ class Game(db_handler.Db_handler):
             w1_ans = input("Insert wrong answer (1/3): ")
             w2_ans = input("Insert wrong answer (2/3): ")
             w3_ans = input("Insert wrong answer (3/3): ")
-            cat = input("Insert category: ")
-            diff = check_int_input(
-                "Insert difficulty (1, 2, 3, 5): ",
-                (1, 6),
-                [4]
-                )
+            n = 1
+            print("Choose a category:")
+            for key in self.topics.keys():
+                print(f"{n}. {key}")
+                n += 1
+            cat = check_int_input("Your choice: ", (1, n))
+            diff = check_int_input("Insert difficulty (1, 2, 3, 5): ", (1, 6), [4])
             question = {
-                'category': cat,
-                'difficulty': diff,
-                'question': text,
-                'correct answer': corr_answer,
-                'wrong answers': [w1_ans, w2_ans, w3_ans]
-                }
+                "category": cat,
+                "difficulty": diff,
+                "question": text,
+                "correct answer": corr_answer,
+                "wrong answers": [w1_ans, w2_ans, w3_ans],
+            }
 
             print("-- Input complete. Please review your question --")
             for key, value in question.items():
                 print(f"{key}: {value}")
             correct = check_int_input(
-                text="1. Add question\n2. Discard question",
-                int_range=(1, 3)
-                )
-            if correct == '1':
-                return question
+                text="1. Add question\n2. Discard question\nYour choice: ", int_range=(1, 3)
+            )
+            if correct == 1:
+                return question, self.player
             else:
-                continue
+                print("Question discarded. Returning to Main Menu.")
+                return
 
 
-if __name__ == '__main__':
-    game = Game()
+if __name__ == "__main__":
+    game = Game("Jeff")
 
     # game.game_round("advanced")
 
-    print(game.add_question())
+    print(game.game_round())
 # key, value = questions[1].items()
 # print(key, "\n", value)
