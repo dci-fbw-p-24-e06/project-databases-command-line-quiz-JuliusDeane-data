@@ -10,6 +10,8 @@ TODO:
 
 + NICE: improve optics of CLI
 
++ FEATURE: improve input handler: Dynamic error messages. Limit attempts. Leave option.
+
 + BIG FEATURE: GUI adding
 
 

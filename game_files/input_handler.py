@@ -59,6 +59,7 @@ def set_password():
             print("Not allowed. Password must be between 6 and 25 characters.")
             password = ""
         else:
+            check_str_input_whitelist("Repeat password: ", [password])
             hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
             hashed_pw_base64 = base64.b64encode(hashed_pw).decode("utf-8")
             return hashed_pw_base64
