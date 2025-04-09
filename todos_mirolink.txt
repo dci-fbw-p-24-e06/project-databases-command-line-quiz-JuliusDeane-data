@@ -1,0 +1,17 @@
+TODO:
+
++ SAFETY: change SQL inserts to protect against SQL injections
+
++ BUG: correct for error when player has not enough questions left (wants to play 10 rounds, but already answered all but 8 questions)
+
++ FEATURE: save (high-)scores from players, show own statistics (questions answered per category)
+
++ FEATURE: option to play with all questions or those you havent answered yet.
+
++ NICE: improve optics of CLI
+
++ BIG FEATURE: GUI adding
+
+
+
+https://miro.com/app/board/uXjVIKdFt1s=/?share_link_id=515480242884

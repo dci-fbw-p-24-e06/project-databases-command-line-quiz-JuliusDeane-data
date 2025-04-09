@@ -76,10 +76,16 @@ class Db_handler:
         conn.commit()
         conn.close()
 
-    def add_new_question(self, player: str, question):
-        pass
+    def add_new_question(self, player: str, question: dict):
+        conn = psy.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(
+            f"INSERT INTO {question["category"]} (question, correct_answer, wrong_1, wrong_2, wrong_3, difficulty, added_by) VALUES ('{question["question"]}', '{question["correct answer"]}', '{question["wrong answers"][0]}', '{question["wrong answers"][1]}', '{question["wrong answers"][2]}', '{question["difficulty"]}', '{player}');"
+        )
+        conn.commit()
+        conn.close()
 
 
 if __name__ == "__main__":
     db = Db_handler()
-    print(db.get_password("Philip"))
+    print(db.add_new_question())

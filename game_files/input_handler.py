@@ -20,8 +20,8 @@ def check_int_input(text, int_range=(1, 999999), exclude=[]):
 
 
 def check_str_input_whitelist(
-    text: str, whitelist: list, show_list: str = "y"
-) -> str:  # noqa
+    text: str, whitelist: list, show_list: str = "n"
+) -> str:
     choice = ""
     while not choice:
         choice = input(text)
@@ -37,7 +37,7 @@ def check_str_input_whitelist(
 
 def check_str_input_blacklist(
     text: str, blacklist: list, show_list: str = "n"
-) -> str:  # noqa
+) -> str:
     choice = ""
     while not choice:
         choice = input(text)

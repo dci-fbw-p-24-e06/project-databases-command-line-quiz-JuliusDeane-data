@@ -79,7 +79,7 @@ class Game(Db_handler):
         id = self.pick_question()
         print(self.show_question(id))
         print(self.show_answers(id))
-        answer = check_str_input_whitelist("Your answer: ", ["a", "b", "c", "d"])
+        answer = check_str_input_whitelist("Your answer: ", ["a", "b", "c", "d"], show_list='y')
         print(self.check_answer(id, answer))
 
     def game_round(self):
@@ -108,7 +108,7 @@ class Game(Db_handler):
             for key in self.topics.keys():
                 print(f"{n}. {key}")
                 n += 1
-            cat = check_int_input("Your choice: ", (1, n))
+            cat = list(self.topics.keys())[check_int_input("Your choice: ", (1, n))-1]
             diff = check_int_input("Insert difficulty (1, 2, 3, 5): ", (1, 6), [4])
             question = {
                 "category": cat,
@@ -120,15 +120,18 @@ class Game(Db_handler):
 
             print("-- Input complete. Please review your question --")
             for key, value in question.items():
-                print(f"{key}: {value}")
+                print(f"{key} => {value}")
             correct = check_int_input(
-                text="1. Add question\n2. Discard question\nYour choice: ", int_range=(1, 3)
+                text="1. Add question and leave\n2. Discard question and start again\n3. Discard question and leave\nYour choice: ", int_range=(1, 4)
             )
             if correct == 1:
-                return question, self.player
+                question["category"] = self.topics[cat]
+                self.add_new_question(self.player, question)
+                return "Question added. Thank you!"
+            elif correct == 2:
+                print("Question discarded. Enter new question.")
             else:
-                print("Question discarded. Returning to Main Menu.")
-                return
+                return "Question discarded. Returning to Main Menu."
 
 
 if __name__ == "__main__":
