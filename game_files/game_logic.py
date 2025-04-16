@@ -1,6 +1,5 @@
 from .db_handler import Db_handler
 import random
-from typing import Union
 from .input_handler import check_int_input, check_str_input_whitelist
 
 
@@ -156,7 +155,11 @@ class Game(Db_handler):
                 return "Question discarded. Returning to Main Menu."
             
     def show_player_scores(self):
-        print(self.corr_answers_dict)
+        total_questions = self.get_num_questions_per_cat()
+        for item in self.corr_answers_dict.keys():
+            topic = next((k for k, v in self.topics.items() if v == item), None)
+            print(f"__{topic}__")
+            print(f"{len(self.corr_answers_dict[item])} / {sum(total_questions[item])} questions answered.\n")
 
 
 if __name__ == "__main__":

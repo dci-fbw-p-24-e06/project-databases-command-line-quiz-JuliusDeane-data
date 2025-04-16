@@ -475,3 +475,16 @@ JOIN q_classes ON q_general.difficulty=q_classes.difficulty
 JOIN q_functions ON q_general.difficulty=q_functions.difficulty
 JOIN q_file_handling ON q_general.difficulty=q_file_handling.difficulty 
 GROUP BY q_general.difficulty ORDER BY q_general.difficulty;
+
+
+SELECT 
+q_general.difficulty AS "Difficulty",
+COUNT(q_general.question) AS "q_general",
+COUNT(q_classes.question) AS "q_classes",
+COUNT(q_functions.question) AS "q_functions",
+COUNT(q_file_handling.question) AS "q_file_handling"
+FROM q_general
+JOIN q_classes ON q_general.difficulty=q_classes.difficulty 
+JOIN q_functions ON q_general.difficulty=q_functions.difficulty
+JOIN q_file_handling ON q_general.difficulty=q_file_handling.difficulty 
+GROUP BY q_general.difficulty ORDER BY q_general.difficulty;

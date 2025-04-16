@@ -1,5 +1,4 @@
 import psycopg2 as psy
-import pandas as pd
 import json
 from .config import config
 
@@ -117,6 +116,7 @@ class Db_handler:
 if __name__ == "__main__":
     db = Db_handler()
     q= db.get_num_questions_per_cat()
+    print(q)
     for n in q.items():
         print(n[0])
         print(sum(n[1]))

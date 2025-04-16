@@ -40,12 +40,13 @@ class CLI_Menu:
     def main_menu(self):
         """Main Menu. Shows options and takes player inputs."""
         while self.status:
-            print("#__MAIN MENU__#")
+            print("#__MAIN MENU__#\n")
             for key, value in self.main_menu_choices.items():
                 print(f"{key}. {value}")
             menu_choice = check_int_input(
                 "Make your choice: ", (1, len(self.main_menu_choices) + 1)
             )
+            print("\n")
             if menu_choice == 1:
                 self.new_game()
             elif menu_choice == 2:
@@ -64,7 +65,7 @@ class CLI_Menu:
         difficulty and number of rounds.
         Creates a Game object.
         """
-        print("__Setup New Game__")
+        print("__Setup New Game__\n")
         topic = self.set_topic()
         difficulty = self.set_difficulty()
         rounds = self.set_rounds()
@@ -129,6 +130,7 @@ class Login(Db_handler):
         print("##__THE PYTHON QUIZ__##")
         print("1. Login existing player\n2. Add new player")
         choice = check_int_input("Your choice (1-2): ", (1, 3))
+        print("\n")
         if choice == 1:
             self.existing_player()
         elif choice == 2:
@@ -136,12 +138,12 @@ class Login(Db_handler):
         return self.player
 
     def login_success(self):
-        print(f"Login succesful as player: '{self.player}'")
+        print(f"\nLogin succesful as player: '{self.player}'")
         m = CLI_Menu(self.player)
         m.main_menu()
 
     def login_fail(self):
-        print("Login failed. Please try again later.")
+        print("\nLogin failed. Please try again later.")
 
 
 class GUI_Menu(tkinter.Tk):
@@ -157,6 +159,4 @@ if __name__ == "__main__":
     if player:
         m = CLI_Menu(player)
         m.main_menu()
-    else:
-        print("Login failed. Please try again later.")
-    # print(login.player_list)
+
