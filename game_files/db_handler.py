@@ -3,9 +3,6 @@ import json
 from .config import config
 
 
-# pandas???
-
-
 class Db_handler:
     topics = {"General Python": "q_general", "Functions": "q_functions", "Classes": "q_classes", "File Handling": "q_file_handling"}
 
@@ -24,7 +21,7 @@ class Db_handler:
     def get_questions(self, topic: str, difficulty: int) -> dict:
         conn = psy.connect(**config)
         cursor = conn.cursor()
-        query = f"SELECT id, question, correct_answer, wrong_1, wrong_2, wrong_3, difficulty FROM {self.topics[topic]} WHERE difficulty=%s;"
+        query = f"SELECT id, question, correct_answer, wrong_1, wrong_2, wrong_3, difficulty FROM {self.topics[topic]} WHERE difficulty=%s;" # noqa
         values = (difficulty,)
         cursor.execute(query, values)
         questions = self.questions_to_dict(cursor.fetchall())
@@ -38,7 +35,7 @@ class Db_handler:
         cursor.execute(query)
         data = cursor.fetchall()
         columns = [desc[0] for desc in cursor.description]
-        questions_per_cat = {columns[n]: [x[n] for x in data] for n in range(1, len(columns))}
+        questions_per_cat = {columns[n]: [x[n] for x in data] for n in range(1, len(columns))} # noqa
         conn.close()
         return questions_per_cat
 

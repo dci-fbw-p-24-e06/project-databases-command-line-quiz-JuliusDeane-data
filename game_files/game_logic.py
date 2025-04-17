@@ -1,9 +1,6 @@
 from .db_handler import Db_handler
 import random
-from .input_handler import check_int_input, check_str_input_whitelist
-
-
-# db = db_handler.Db_handler()
+from .input_handler import check_int_input, check_str_input_whitelist, slow_print
 
 
 class Game(Db_handler):
@@ -73,14 +70,16 @@ class Game(Db_handler):
             self.total_rounds = len(self.id_list)
             return False
         return True
-    
+
     def reset_answered_questions(self):
-        assure = check_str_input_whitelist("This will reset your list of answered questions.\nDo you want to proceed? ('y'/'n'): ", ['y', 'n', 'Y', 'N'])
+        assure = check_str_input_whitelist(
+            "This will reset your list of answered questions.\nDo you want to proceed? ('y'/'n'): ",  # noqa
+            ['y', 'n', 'Y', 'N'])
         if assure == 'y':
             self.add_answered_questions(self.player, self.empty_answ_dict)
-            print("All reset.")
+            slow_print("All reset.")
         else:
-            print("Process aborted.")
+            slow_print("Process aborted.")
 
     def pick_question(self) -> int:
         """Returns the id of a randomly picked question"""
@@ -94,12 +93,15 @@ class Game(Db_handler):
         This will pick and show one question
         and check the answer.
         """
-        print(f"Round {self.rounds} of {self.total_rounds}:")
+        slow_print(f"Round {self.rounds} of {self.total_rounds}:")
         id = self.pick_question()
-        print(self.show_question(id))
-        print(self.show_answers(id))
-        answer = check_str_input_whitelist("Your answer: ", ["a", "b", "c", "d"], show_list=True)
-        print(self.check_answer(id, answer))
+        slow_print(self.show_question(id))
+        slow_print(self.show_answers(id))
+        answer = check_str_input_whitelist(
+            "Your answer: ",
+            ["a", "b", "c", "d"],
+            show_list=True)
+        slow_print(self.check_answer(id, answer))
 
     def game_round(self):
         """
@@ -109,13 +111,14 @@ class Game(Db_handler):
         self.load_questions(self.topic, self.difficulty)
         self.make_id_list()
         if not self.check_enough_questions():
-            print(f"Not enough questions available. Number of rounds set to {self.total_rounds}")
+            slow_print(f"Not enough questions available. "
+                  f"Number of rounds set to {self.total_rounds}")
         while self.rounds < self.total_rounds:
             self.rounds += 1
             self.question_round()
         else:
             self.add_answered_questions(self.player, self.corr_answers_dict)
-            print(f"Game over. Your total score is: {self.score}.")
+            slow_print(f"Game over. Your total score is: {self.score}.")
 
     def add_question(self):
         while True:
@@ -129,8 +132,13 @@ class Game(Db_handler):
             for key in self.topics.keys():
                 print(f"{n}. {key}")
                 n += 1
-            cat = list(self.topics.keys())[check_int_input("Your choice: ", (1, n))-1]
-            diff = check_int_input("Insert difficulty (1, 2, 3, 5): ", (1, 6), [4])
+            cat = list(self.topics.keys())[check_int_input(
+                "Your choice: ",
+                (1, n))-1]
+            diff = check_int_input(
+                "Insert difficulty (1, 2, 3, 5): ",
+                (1, 6), [4]
+                )
             question = {
                 "category": cat,
                 "difficulty": diff,
@@ -143,7 +151,7 @@ class Game(Db_handler):
             for key, value in question.items():
                 print(f"{key} => {value}")
             correct = check_int_input(
-                text="1. Add question and leave\n2. Discard question and start again\n3. Discard question and leave\nYour choice: ", int_range=(1, 4)
+                text="1. Add question and leave\n2. Discard question and start again\n3. Discard question and leave\nYour choice: ", int_range=(1, 4)  # noqa
             )
             if correct == 1:
                 question["category"] = self.topics[cat]
@@ -153,24 +161,20 @@ class Game(Db_handler):
                 print("Question discarded. Enter new question.")
             else:
                 return "Question discarded. Returning to Main Menu."
-            
+
     def show_player_scores(self):
         total_questions = self.get_num_questions_per_cat()
         for item in self.corr_answers_dict.keys():
-            topic = next((k for k, v in self.topics.items() if v == item), None)
-            print(f"__{topic}__")
-            print(f"{len(self.corr_answers_dict[item])} / {sum(total_questions[item])} questions answered.\n")
+            topic = next((k for k, v in self.topics.items() if v == item), None)  # noqa
+            slow_print(f"__{topic}__", 2)
+            slow_print(f"{len(self.corr_answers_dict[item])} / {sum(total_questions[item])} questions answered.\n", 2)  # noqa
+        input("Press any key to continue.\n")
 
 
 if __name__ == "__main__":
     game = Game("Philip")
-
-    # game.game_round("advanced")
-
     answers = game.corr_answers_dict
     print(answers.values())
     answ_l = [n for n in answers.values()]
     summ = sum(len[n] for n in answers.values() if n)
     print(summ)
-# key, value = questions[1].items()
-# print(key, "\n", value)

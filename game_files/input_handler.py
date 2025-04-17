@@ -1,6 +1,7 @@
 import bcrypt
 import base64
 import getpass
+import time
 
 
 def check_int_input(text: str, int_range: tuple = (1, 999999), exclude: list = []) -> str:
@@ -132,7 +133,19 @@ def check_password(text: str, password: str, encoded: bool=True) -> bool:
     return success
 
 
+def slow_print(text: str, speed: int | None = 3) -> None:
+    """
+    Prints the input text with a delay between characters.
+    Base delay: 0.01 seconds.
+    Standard delay: 0.03 seconds.
+    Higher number = Longer delay
+    Adds "\n" at the end.
+    """
+    for n in text:
+        print(n, end="", flush=True)
+        time.sleep(0.01*speed)
+    print("\n")
+
+
 if __name__ == "__main__":
-    print(
-        set_password()
-    )
+    slow_print("This is a\ntest text!", 8)

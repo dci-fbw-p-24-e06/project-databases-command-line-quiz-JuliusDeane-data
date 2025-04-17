@@ -6,7 +6,8 @@ from .input_handler import (
     check_str_input_blacklist,
     check_str_input_whitelist,
     set_password,
-    check_password
+    check_password,
+    slow_print
 )
 
 
@@ -40,9 +41,9 @@ class CLI_Menu:
     def main_menu(self):
         """Main Menu. Shows options and takes player inputs."""
         while self.status:
-            print("#__MAIN MENU__#\n")
+            slow_print("#__MAIN MENU__#")
             for key, value in self.main_menu_choices.items():
-                print(f"{key}. {value}")
+                slow_print(f"{key}. {value}")
             menu_choice = check_int_input(
                 "Make your choice: ", (1, len(self.main_menu_choices) + 1)
             )
@@ -56,7 +57,8 @@ class CLI_Menu:
             elif menu_choice == 4:
                 Game(self.player).add_question()
             elif menu_choice == 5:
-                print(f"Thank you for playing.\nSee you next time {self.player}!")
+                slow_print("Thank you for playing."
+                           f"\nSee you next time, {self.player}!")
                 self.status = False
 
     def new_game(self):
@@ -65,34 +67,44 @@ class CLI_Menu:
         difficulty and number of rounds.
         Creates a Game object.
         """
-        print("__Setup New Game__\n")
+        slow_print("__Setup New Game__\n")
         topic = self.set_topic()
         difficulty = self.set_difficulty()
         rounds = self.set_rounds()
         g = Game(
-            player=self.player, total_rounds=rounds, topic=topic, difficulty=difficulty
+            player=self.player,
+            total_rounds=rounds,
+            topic=topic,
+            difficulty=difficulty
         )
+        print("\n")
         g.game_round()
 
     def set_topic(self):
-        print("Choose topic:")
+        slow_print("Choose topic:")
         for key, value in self.topics.items():
-            print(f"{key}. {value}")
-        topic_choice = check_int_input(text="Your choice (1-4): ", int_range=(1, 5))
+            slow_print(f"{key}. {value}")
+        topic_choice = check_int_input(
+            text="Your choice (1-4): ",
+            int_range=(1, 5)
+        )
         return self.topics[topic_choice]
 
     def set_difficulty(self):
-        print("Choose difficulty:")
+        slow_print("Choose difficulty:")
         for key, value in self.difficulty_levels.items():
-            print(f"{key}. {value}")
+            slow_print(f"{key}. {value}")
         diff_choice = check_int_input(
-            text="Your choice (1-5): ", int_range=(1, 6), exclude=[4]
+            text="Your choice (1-5): ",
+            int_range=(1, 6),
+            exclude=[4]
         )
         return diff_choice
 
     def set_rounds(self):
         rounds = check_int_input(
-            text="Enter number of rounds (1-12): ", int_range=(1, 13)
+            text="Enter number of rounds (1-12): ",
+            int_range=(1, 13)
         )
         return rounds
 
@@ -127,8 +139,8 @@ class Login(Db_handler):
             self.login_fail()
 
     def login_screen(self):
-        print("##__THE PYTHON QUIZ__##")
-        print("1. Login existing player\n2. Add new player")
+        slow_print("##__THE PYTHON QUIZ__##", 5)
+        slow_print("1. Login existing player\n2. Add new player", 3)
         choice = check_int_input("Your choice (1-2): ", (1, 3))
         print("\n")
         if choice == 1:
@@ -146,17 +158,9 @@ class Login(Db_handler):
         print("\nLogin failed. Please try again later.")
 
 
-class GUI_Menu(tkinter.Tk):
-    def __init__(self, screenName = None, baseName = None, className = "Tk", useTk = True, sync = False, use = None):
-        super().__init__(screenName, baseName, className, useTk, sync, use)
-
 if __name__ == "__main__":
-    #app = GUI_Menu()
-    #app.mainloop()
-
     login = Login()
     player = login.login_screen()
     if player:
         m = CLI_Menu(player)
         m.main_menu()
-
